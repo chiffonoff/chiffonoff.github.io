@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Junpei Kobayashi</title>
+  <link rel="stylesheet" href="style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Noto+Sans+JP:wght@400;700;900&display=swap" rel="stylesheet">
+</head>
+
+<body>
+<div id="loading">
+  <div id="loading-inner">
+    <div id="loading-bar-wrap">
+      <div class="loading-seg"></div>
+      <div class="loading-seg"></div>
+      <div class="loading-seg"></div>
+      <div class="loading-seg"></div>
+      <div class="loading-seg"></div>
+      <div class="loading-seg"></div>
+      <div class="loading-seg"></div>
+      <div class="loading-seg"></div>
+    </div>
+    <p id="loading-text">loading... <span id="loading-num">0</span>%</p>
+  </div>
+</div>
+
+<div id="top-screen">
+  <canvas id="grid-canvas"></canvas>
+  <canvas id="three-canvas"></canvas>
+  <div id="mv">
+    <img src="mv.png" alt="main visual" id="mv-img">
+    <div id="mv-overlay"></div>
+  </div>
+  <div id="top-content">
+    <p id="top-sub">Designer / Game Creator</p>
+    <h1>Junpei<br><span>Kobayashi</span></h1>
+    <p id="top-tagline">Blender · Photoshop · C#</p>
+    <button id="enter-btn" onclick="enterSite()">Enter ↓</button>
+  </div>
+</div>
+
+<section class="skills">
+  <h2>Skills</h2>
+  <div class="skills-list">
+    <span>Blender</span>
+    <span>Photoshop</span>
+    <span>Illustrator</span>
+    <span>After Effects</span>
+    <span>TouchDesigner</span>
+    <span>Substance 3D Painter</span>
+  </div>
+</section>
+
+<section class="about">
+  <h2>About</h2>
+  <p>ゲーム制作やデザインを中心に活動しています。</p>
+</section>
+
+<section class="p_works">
+  <h2>Personal Works</h2>
+  <div class="works-scroll-wrap">
+    <button class="scroll-arrow left" onclick="scrollWorks(this, -1)">◀</button>
+    <div class="works-grid">
+      <div class="work-item" data-stage="STAGE 01">
+        <img src="work1.jpg" alt="作品①" onclick="openModal(this.src, '作品①の説明')">
+        <div class="overlay"><p>作品タイトル</p></div>
+      </div>
+      <div class="work-item" data-stage="STAGE 02">
+        <img src="work2.jpg" alt="作品②" onclick="openModal(this.src, '作品②の説明')">
+        <div class="overlay"><p>作品タイトル</p></div>
+      </div>
+      <div class="work-item" data-stage="STAGE 03">
+        <img src="work3.jpg" alt="作品③" onclick="openModal(this.src, '作品③の説明')">
+        <div class="overlay"><p>作品タイトル</p></div>
+      </div>
+      <div class="work-item" data-stage="STAGE 04">
+        <img src="work1.jpg" alt="作品④" onclick="openModal(this.src, '作品④の説明')">
+        <div class="overlay"><p>作品タイトル</p></div>
+      </div>
+      <div class="work-item" data-stage="STAGE 05">
+        <img src="work2.jpg" alt="作品⑤" onclick="openModal(this.src, '作品⑤の説明')">
+        <div class="overlay"><p>作品タイトル</p></div>
+      </div>
+      <div class="work-item" data-stage="STAGE 06">
+        <img src="work3.jpg" alt="作品⑥" onclick="openModal(this.src, '作品⑥の説明')">
+        <div class="overlay"><p>作品タイトル</p></div>
+      </div>
+    </div>
+    <button class="scroll-arrow right" onclick="scrollWorks(this, 1)">▶</button>
+  </div>
+</section>
+
+<section class="t_works">
+  <h2>Team Works</h2>
+  <div class="works-scroll-wrap">
+    <button class="scroll-arrow left" onclick="scrollWorks(this, -1)">◀</button>
+    <div class="works-grid">
+      <div class="work-item" data-stage="STAGE 01">
+        <img src="work1.jpg" alt="作品①" onclick="openModal(this.src, '作品①の説明')">
+        <div class="overlay"><p>作品タイトル</p></div>
+      </div>
+      <div class="work-item" data-stage="STAGE 02">
+        <img src="work2.jpg" alt="作品②" onclick="openModal(this.src, '作品②の説明')">
+        <div class="overlay"><p>作品タイトル</p></div>
+      </div>
+      <div class="work-item" data-stage="STAGE 03">
+        <img src="work3.jpg" alt="作品③" onclick="openModal(this.src, '作品③の説明')">
+        <div class="overlay"><p>作品タイトル</p></div>
+      </div>
+      <div class="work-item" data-stage="STAGE 04">
+        <img src="work1.jpg" alt="作品④" onclick="openModal(this.src, '作品④の説明')">
+        <div class="overlay"><p>作品タイトル</p></div>
+      </div>
+      <div class="work-item" data-stage="STAGE 05">
+        <img src="work2.jpg" alt="作品⑤" onclick="openModal(this.src, '作品⑤の説明')">
+        <div class="overlay"><p>作品タイトル</p></div>
+      </div>
+    </div>
+    <button class="scroll-arrow right" onclick="scrollWorks(this, 1)">▶</button>
+  </div>
+</section>
+
+
+<section class="logo">
+  <h2>LOGO</h2>
+  <div class="skills-list">
+    <span>Coming soon...</span>
+  </div>
+
+</section>
+
+<section class="drawing ">
+  <h2>DRAWING</h2>
+  <div class="skills-list">
+    <span>Coming soon...</span>
+  </div>
+
+</section>
+
+<div id="modal" class="modal">
+  <div class="modal-content">
+    <span id="close">&times;</span>
+    <img id="modal-img">
+    <p id="modal-text"></p>
+  </div>
+</div>
+
+<section class="contact">
+  <h2>Contact</h2>
+  <p class="contact-sub">お仕事・コラボのご依頼はこちらから</p>
+  <form class="contact-form" onsubmit="handleContact(event)">
+    <div class="form-row">
+      <label>NAME</label>
+      <input type="text" id="c-name" placeholder="Your Name" required>
+    </div>
+    <div class="form-row">
+      <label>EMAIL</label>
+      <input type="email" id="c-email" placeholder="your@email.com" required>
+    </div>
+    <div class="form-row">
+      <label>MESSAGE</label>
+      <textarea id="c-msg" placeholder="Message..." rows="5" required></textarea>
+    </div>
+    <button type="submit" class="contact-btn">▶ SEND MESSAGE</button>
+    <p class="form-status" id="form-status" aria-live="polite"></p>
+  </form>
+  <div class="contact-links">
+    <a href="#" class="contact-link">Twitter</a>
+    <a href="#" class="contact-link">GitHub</a>
+    <a href="#" class="contact-link">Instagram</a>
+  </div>
+</section>
+
+<footer>
+  <p>© 2026</p>
+</footer>
+
+<div class="cursor"></div>
+<script src="script.js"></script>
+<!-- Three.js + GLBモデルビューア -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="model-viewer.js"></script>
+</body>
+</html>
