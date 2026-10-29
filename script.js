@@ -1,26 +1,89 @@
-const modal = document.getElementById("modal");
-const modalImg = document.getElementById("modal-img");
-const modalText = document.getElementById("modal-text");
-const closeBtn = document.getElementById("close");
+/* ---- 作品カードを生成 ---- */
+const esc = t => String(t).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 
-function openModal(src, text) {
-  modalImg.src = src;
-  modal.classList.add("active");
-  modalText.textContent = text;
-}
-
-closeBtn.onclick = function() {
-  modal.classList.remove("active");
-};
-document.addEventListener("keydown", e => {
-  if (e.key === "Escape") modal.classList.remove("active");
+WORKS.forEach((w, i) => {
+  const grid = document.getElementById('grid-' + w.section);
+  if (!grid) return;
+  const item = document.createElement('div');
+  item.className = 'work-item';
+  item.dataset.stage = w.badge || '';
+  item.tabIndex = 0;
+  item.setAttribute('role', 'button');
+  item.setAttribute('aria-label', w.title + ' の詳細を開く');
+  item.innerHTML = `
+    <img src="${thumbOf(w)}" alt="${esc(w.title)}" loading="lazy" draggable="false">
+    ${w.youtube ? '<span class="play-mark">▶</span>' : ''}
+    <div class="overlay"><p>${esc(w.title)}</p></div>`;
+  item.addEventListener('click', () => { if (!dragMoved) openModal(i); });
+  item.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openModal(i); } });
+  grid.appendChild(item);
 });
 
-window.onclick = function(e) {
-  if (e.target === modal) {
-    modal.classList.remove("active");
+/* 枚数が少ない列は矢印を隠す */
+document.querySelectorAll('.works-scroll-wrap').forEach(wrap => {
+  const n = wrap.querySelectorAll('.work-item').length;
+  if (n <= 3) wrap.classList.add('few');
+});
+
+/* ---- モーダル ---- */
+const modal      = document.getElementById("modal");
+const modalImg   = document.getElementById("modal-img");
+const modalThumbs= document.getElementById("modal-thumbs");
+const modalMedia = document.querySelector(".modal-media");
+const closeBtn   = document.getElementById("close");
+let dragMoved = false;
+
+function showMedia(w, idx) {
+  const old = modalMedia.querySelector('.modal-video');
+  if (old) old.remove();
+  if (idx === 'video') {
+    modalImg.hidden = true;
+    const box = document.createElement('div');
+    box.className = 'modal-video';
+    box.innerHTML = `<iframe src="https://www.youtube-nocookie.com/embed/${w.youtube}?autoplay=1" title="${esc(w.title)}" allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen></iframe>`;
+    modalMedia.insertBefore(box, modalThumbs);
+  } else {
+    modalImg.hidden = false;
+    modalImg.src = imgUrl(w.imgs[idx]);
+    modalImg.alt = w.title;
   }
-};
+  modalThumbs.querySelectorAll('button').forEach(b => b.classList.toggle('on', b.dataset.idx === String(idx)));
+}
+
+function openModal(i) {
+  const w = WORKS[i];
+  document.getElementById('modal-badge').textContent = w.badge || '';
+  document.getElementById('modal-title').textContent = w.title;
+  document.getElementById('modal-text').textContent = w.text || '';
+  document.getElementById('modal-tags').innerHTML = (w.tags || []).map(t => `<span>${esc(t)}</span>`).join('');
+
+  const links = [];
+  if (w.youtube) links.push(`<a href="https://youtu.be/${w.youtube}" target="_blank" rel="noopener" class="modal-link">▶ YouTubeで見る</a>`);
+  if (w.link)    links.push(`<a href="${w.link}" target="_blank" rel="noopener" class="modal-link">ViViViTで詳しく見る</a>`);
+  document.getElementById('modal-links').innerHTML = links.join('');
+
+  const thumbs = [];
+  if (w.youtube) thumbs.push(`<button data-idx="video" aria-label="動画"><img src="https://img.youtube.com/vi/${w.youtube}/default.jpg" alt=""><span>▶</span></button>`);
+  (w.imgs || []).forEach((p, k) => thumbs.push(`<button data-idx="${k}" aria-label="画像${k + 1}"><img src="${imgUrl(p, 200)}" alt=""></button>`));
+  modalThumbs.innerHTML = thumbs.length > 1 ? thumbs.join('') : '';
+  modalThumbs.querySelectorAll('button').forEach(b => b.addEventListener('click', () => showMedia(w, b.dataset.idx === 'video' ? 'video' : +b.dataset.idx)));
+
+  showMedia(w, (w.imgs && w.imgs.length) ? 0 : 'video');
+  modal.classList.add("active");
+  document.body.classList.add('modal-open');
+  closeBtn.focus();
+}
+
+function closeModal() {
+  modal.classList.remove("active");
+  document.body.classList.remove('modal-open');
+  const v = modalMedia.querySelector('.modal-video');
+  if (v) v.remove();
+}
+
+closeBtn.onclick = closeModal;
+document.addEventListener("keydown", e => { if (e.key === "Escape") closeModal(); });
+window.onclick = function(e) { if (e.target === modal) closeModal(); };
 
 document.querySelectorAll(".work-item").forEach(item => {
   item.addEventListener("mousemove", e => {
@@ -280,6 +343,7 @@ document.querySelectorAll('.works-grid').forEach(grid => {
 
   grid.addEventListener('mousedown', e => {
     isDown = true;
+    dragMoved = false;
     startX = e.pageX - grid.offsetLeft;
     scrollLeft = grid.scrollLeft;
   });
@@ -292,6 +356,7 @@ document.querySelectorAll('.works-grid').forEach(grid => {
     e.preventDefault();
     const x    = e.pageX - grid.offsetLeft;
     const walk = (x - startX) * 1.2;
+    if (Math.abs(walk) > 5) dragMoved = true;
     grid.scrollLeft = scrollLeft - walk;
   });
 });
